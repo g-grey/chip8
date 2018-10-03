@@ -1,3 +1,5 @@
 roms
 *.txt
 chip8
+*.o
+.vscode/

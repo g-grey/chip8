@@ -18,16 +18,13 @@ Chip8::Chip8() :
     stackPointer = -1;
     paused = false;
     updateScreen = true;
-
-    // init map to all zeroes
-    for (int h = 0; h < MAP_HEIGHT; h++) {
-        for (int w = 0; w < MAP_WIDTH; w++) {
-            map[w][h] = 0;
-        }
-    }
-
+    
+    clearMap();
     loadFont();
+    srand(time(NULL));
 }
+
+Chip8::~Chip8() {}
 
 void Chip8::loadFont() {
     unsigned char font[] = {
@@ -75,6 +72,18 @@ void Chip8::loadRom(string rom) {
     }
 }
 
+void Chip8::clearMap() {
+    for (int h = 0; h < MAP_HEIGHT; h++) {
+        for (int w = 0; w < MAP_WIDTH; w++) {
+            map[w][h] = 0;
+        }
+    }
+}
+
+bool Chip8::beep() {
+    return soundTimer > 0;
+}
+
 void Chip8::draw(int x, int y, int height) {
     uint8_t bits[SPRITE_WIDTH];
 
@@ -99,7 +108,6 @@ void Chip8::draw(int x, int y, int height) {
     }
 }
 
-
 void Chip8::execute() {
     bool increment = true;
     opcode = (memory[programCounter] << 8) | memory[programCounter+1];
@@ -111,11 +119,7 @@ void Chip8::execute() {
             switch (opcode & 0x00FF) {
                 case 0x00e0:
                     cout << "clearing screen..." << endl;
-                    for (int h = 0; h < MAP_HEIGHT; h++) {
-                        for (int w = 0; w < MAP_WIDTH; w++) {
-                            map[w][h] = 0;
-                        }
-                    }
+                    clearMap();
                     updateScreen = true;
                     break;
                 case 0x00ee:
@@ -281,56 +285,4 @@ void Chip8::execute() {
     if (delayTimer > 0) --delayTimer;
     if (soundTimer > 0) --soundTimer;
     if (increment) programCounter += 2;
-}
-
-void Chip8::printRom() {
-    for (int x = PC_START; x < PC_START+romSize; x += 2) {
-        opcode = (memory[x] << 8) | memory[x+1];
-        printf("0x%04x: 0x%04x\n", x, opcode);
-    }
-}
-
-void Chip8::printRegisters() {
-    printf("\nRegisters\n");
-    printf("PC: 0x%x\n", programCounter);
-    printf("I: 0x%x\n", i);
-    printf("SP: 0x%x\n\n", stackPointer);
-
-    for (int x = 0; x < NUM_REGISTERS; x++) {
-        printf("V%X: 0x%x\n", x, registers[x]);
-    }
-}
-
-void Chip8::printMemory() {
-    for (int x = 0; x < MEMORY_SIZE; x++) {
-        printf("0x%x: 0x%x ", x, memory[x]);
-
-        if (x % 15 == 0) printf("\n");
-    }
-
-    printf("\n");
-}
-
-void Chip8::printStack() {
-    printf("\nsp: %d\n", stackPointer);
-
-    for (int x = 0; x < STACK_SIZE; x++) {
-        printf("%d: 0x%x\n", x, stack[x]);
-    }
-}
-
-void Chip8::printMap() {
-    for (int h = 0; h < MAP_HEIGHT; h++) {
-        for (int w = 0; w < MAP_WIDTH; w++) {
-            if (map[w][h]) printf("#");
-            else printf("-");
-        }
-        printf("\n");
-    }
-}
-
-void Chip8::printKeys() {
-    for (int x = 0; x < NUM_KEYS; x++) {
-        printf("%d: 0x%x\n", x, keyStates[x]);
-    }
 }

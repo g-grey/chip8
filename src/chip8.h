@@ -16,16 +16,13 @@
 class Chip8 {
     public:
         Chip8();
+        ~Chip8();
         void loadFont();
         void loadRom(std::string rom);
+        void clearMap();
+        bool beep();
         void draw(int x, int y, int height);
         void execute();
-        void printRom();
-        void printRegisters();
-        void printMemory();
-        void printStack();
-        void printMap();
-        void printKeys();
         void setKeyStates(bool &keyMap);
 
         uint8_t registers[NUM_REGISTERS];
