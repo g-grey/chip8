@@ -5,10 +5,14 @@
 using namespace std;
 
 int main(int argc, char **argv) {
+    if (argc != 2) {
+        cout << "Usage: ./chip8 <rom>" << endl;
+        return 1;
+    }
+
     UI ui;    
     Chip8 chip8;
     chip8.loadRom(argv[1]);
-    bool quit = false;    
 
     while (!ui.quit) {
         //int start = SDL_GetTicks();
@@ -31,4 +35,6 @@ int main(int argc, char **argv) {
         if (sleepTime > 0) SDL_Delay(sleepTime);
         */
     }
+
+    return 0;
 }
