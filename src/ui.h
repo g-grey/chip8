@@ -1,5 +1,8 @@
 #include <SDL2/SDL.h>
 #include <map>
+#include <string>
+#include "chip8.h"
+#include "debug.h"
 
 #ifndef UI_H
 #define UI_H
@@ -16,7 +19,7 @@ class UI {
         ~UI();
         void drawScreen(u_int8_t (&map)[MAP_WIDTH][MAP_HEIGHT]);
         void getInput();
-
+        bool run(std::string rom, bool debugMode);
         bool quit;
     private:
         SDL_Window *window;
@@ -24,6 +27,9 @@ class UI {
         SDL_Event e;
         std::map<int,int> keyMap;
         std::map<int,int>::iterator it;
+        Chip8 chip8;
+        bool paused;
+        bool debugMode;
 };
 
 #endif

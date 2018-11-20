@@ -2,6 +2,8 @@
 
 UI::UI() {
     quit = false;
+    paused = false;
+    debugMode = false;
     SDL_Init(SDL_INIT_VIDEO);
 
     window = SDL_CreateWindow(
@@ -41,6 +43,41 @@ UI::~UI() {
     SDL_Quit();
 }
 
+bool UI::run(string rom, bool debug) {
+    paused = debugMode = debug;
+    chip8.loadRom(rom);
+
+    while (!quit) {
+        //int start = SDL_GetTicks();
+        
+        chip8.readOpcode();
+        
+        if (!paused) {
+            chip8.execute();
+
+            if (chip8.updateScreen) {
+                drawScreen(chip8.map);
+            }
+
+            if (debugMode) {
+                paused = true;
+            }
+        }
+
+        getInput();
+
+        /*
+        int time = SDL_GetTicks() - start;
+        if (time < 0) continue;
+
+        int sleepTime = 5 - time;
+        if (sleepTime > 0) SDL_Delay(sleepTime);
+        */
+    }
+
+    return quit;
+}
+
 void UI::drawScreen(uint8_t (&map)[MAP_WIDTH][MAP_HEIGHT]) {
     // TODO - just draw current sprite rather than entire screen
     for (int h = 0; h < MAP_HEIGHT; h++) {
@@ -65,22 +102,32 @@ void UI::drawScreen(uint8_t (&map)[MAP_WIDTH][MAP_HEIGHT]) {
 }
 
 void UI::getInput() {
+    Debug dbg(chip8);
+    
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT) {
             quit = true;
         }
 
         if (e.type == SDL_KEYDOWN) {
-            if (e.key.keysym.sym == SDLK_n) {
-                //chip8.paused = false;
+            if (e.key.keysym.sym == SDLK_m) {
+                dbg.printMap();
             }
 
-            if (e.key.keysym.sym == SDLK_p) {
-                //chip8.printRegisters();
+            if (e.key.keysym.sym == SDLK_n) {
+                paused = false;
             }
 
             if (e.key.keysym.sym == SDLK_o) {
-                //chip8.printMap();
+                dbg.printOpcode();
+            }
+
+            if (e.key.keysym.sym == SDLK_p) {
+                dbg.printRegisters();
+            }
+
+            if (e.key.keysym.sym == SDLK_j) {
+                dbg.printRom();
             }
 
             if (e.key.keysym.sym == SDLK_ESCAPE) {

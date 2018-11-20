@@ -108,11 +108,12 @@ void Chip8::draw(int x, int y, int height) {
     }
 }
 
+void Chip8::readOpcode() {
+    opcode = (memory[programCounter] << 8) | memory[programCounter+1];
+}
+
 void Chip8::execute() {
     bool increment = true;
-    opcode = (memory[programCounter] << 8) | memory[programCounter+1];
-
-    printf("0x%04x    0x%04x\n", programCounter, opcode);
 
     switch (opcode & 0xF000) {
         case 0x0000:
