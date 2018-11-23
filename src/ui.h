@@ -19,7 +19,7 @@ class UI {
         ~UI();
         void drawScreen(u_int8_t (&map)[MAP_WIDTH][MAP_HEIGHT]);
         void getInput();
-        bool run(std::string rom, bool debugMode);
+        void run(string rom, bool debugMode);
         bool quit;
     private:
         SDL_Window *window;
@@ -28,6 +28,7 @@ class UI {
         std::map<int,int> keyMap;
         std::map<int,int>::iterator it;
         Chip8 chip8;
+        Debug *dbg;
         bool paused;
         bool debugMode;
 };

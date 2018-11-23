@@ -25,7 +25,6 @@ class Chip8 {
         void draw(int x, int y, int height);
         void execute();
         void setKeyStates(bool &keyMap);
-        void readOpcode();
 
         uint8_t registers[NUM_REGISTERS];
         uint8_t map[MAP_WIDTH][MAP_HEIGHT];

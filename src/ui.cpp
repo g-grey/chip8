@@ -36,21 +36,22 @@ UI::UI() {
         {SDLK_c, 0xb},
         {SDLK_c, 0xf}
     };
+
+    dbg = new Debug(chip8);
 }
 
 UI::~UI() {
+    delete dbg;
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
-bool UI::run(string rom, bool debug) {
+void UI::run(string rom, bool debug) {
     paused = debugMode = debug;
     chip8.loadRom(rom);
 
     while (!quit) {
         //int start = SDL_GetTicks();
-        
-        chip8.readOpcode();
         
         if (!paused) {
             chip8.execute();
@@ -59,9 +60,7 @@ bool UI::run(string rom, bool debug) {
                 drawScreen(chip8.map);
             }
 
-            if (debugMode) {
-                paused = true;
-            }
+            paused = debugMode;
         }
 
         getInput();
@@ -74,8 +73,6 @@ bool UI::run(string rom, bool debug) {
         if (sleepTime > 0) SDL_Delay(sleepTime);
         */
     }
-
-    return quit;
 }
 
 void UI::drawScreen(uint8_t (&map)[MAP_WIDTH][MAP_HEIGHT]) {
@@ -102,8 +99,6 @@ void UI::drawScreen(uint8_t (&map)[MAP_WIDTH][MAP_HEIGHT]) {
 }
 
 void UI::getInput() {
-    Debug dbg(chip8);
-    
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT) {
             quit = true;
@@ -111,7 +106,7 @@ void UI::getInput() {
 
         if (e.type == SDL_KEYDOWN) {
             if (e.key.keysym.sym == SDLK_m) {
-                dbg.printMap();
+                dbg->printMap();
             }
 
             if (e.key.keysym.sym == SDLK_n) {
@@ -119,15 +114,15 @@ void UI::getInput() {
             }
 
             if (e.key.keysym.sym == SDLK_o) {
-                dbg.printOpcode();
+                dbg->printOpcode();
             }
 
             if (e.key.keysym.sym == SDLK_p) {
-                dbg.printRegisters();
+                dbg->printRegisters();
             }
 
             if (e.key.keysym.sym == SDLK_j) {
-                dbg.printRom();
+                dbg->printRom();
             }
 
             if (e.key.keysym.sym == SDLK_ESCAPE) {

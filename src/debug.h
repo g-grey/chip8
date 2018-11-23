@@ -18,7 +18,8 @@ class Debug {
         void printKeys();
         void printOpcode();
     private:
-        Chip8 chip8;
+        Chip8 &chip8;
+        void printHeader(string text);
 };
 
 #endif

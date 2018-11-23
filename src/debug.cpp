@@ -1,35 +1,47 @@
 #include <iomanip>
 #include "debug.h"
 
-Debug::Debug(Chip8 &ch8) {
-    chip8 = ch8;
-}
+Debug::Debug(Chip8 &ch8) :
+    chip8(ch8) {}
 
 Debug::~Debug() {}
 
 void Debug::printRom() {
-    cout << endl << "ROM" << endl;
+    printHeader("ROM");
     
     for (int x = PC_START; x < PC_START+chip8.romSize; x += 2) {
-        uint16_t opcode = (chip8.memory[x] << 8) | chip8.memory[x+1];
-        cout << "0x" << setfill('0') << setw(4) << hex << x << ": " << "0x" << opcode << endl;
+        cout << "0x" 
+             << setfill('0') << setw(4) << hex << uppercase
+             << x << ": " << "0x" << ((chip8.memory[x] << 8) | chip8.memory[x+1]) << endl;
     }
 }
 
 void Debug::printRegisters() {
-    cout << endl << "REGISTERS" << endl;
-    
-    printf("PC: 0x%x\n", chip8.programCounter);
-    printf("I: 0x%x\n", chip8.i);
-    printf("SP: 0x%x\n\n", chip8.stackPointer);
+    printHeader("REGISTERS");
 
+    cout << "PC: 0x"
+         << setfill('0') << setw(4) << hex << uppercase
+         << chip8.programCounter << endl;
+
+    cout << " I: 0x"
+         << setfill('0') << setw(4) << hex << uppercase
+         << chip8.i << endl;
+
+    cout << "SP: 0x"
+         << setfill('0') << setw(4) << hex << uppercase
+         << chip8.stackPointer << endl << endl;
+    
     for (int x = 0; x < NUM_REGISTERS; x++) {
-        printf("V%X: 0x%x\n", x, chip8.registers[x]);
+        cout << "V" 
+             << hex << uppercase
+             << x << ": " << "0x" 
+             << setfill('0') << setw(4)
+             << (unsigned int)chip8.registers[x] << endl;
     }
 }
 
 void Debug::printMemory() {
-    cout << endl << "MEMORY" << endl;
+    printHeader("MEMORY");
     
     for (int x = 0; x < MEMORY_SIZE; x++) {
         printf("0x%x: 0x%x ", x, chip8.memory[x]);
@@ -41,7 +53,7 @@ void Debug::printMemory() {
 }
 
 void Debug::printStack() {
-    cout << endl << "STACK" << endl;
+    printHeader("STACK");
     
     printf("\nsp: %d\n", chip8.stackPointer);
 
@@ -51,19 +63,22 @@ void Debug::printStack() {
 }
 
 void Debug::printMap() {
-    cout << endl << "MAP" << endl;
+    printHeader("MAP");
     
     for (int h = 0; h < MAP_HEIGHT; h++) {
         for (int w = 0; w < MAP_WIDTH; w++) {
-            if (chip8.map[w][h]) printf("#");
-            else printf("-");
+            if (chip8.map[w][h]) {
+                cout << "#";
+            } else {
+                cout << "-";
+            } 
         }
-        printf("\n");
+        cout << endl;
     }
 }
 
 void Debug::printKeys() {
-    cout << endl << "KEYS" << endl;
+    printHeader("KEYS");
 
     for (int x = 0; x < NUM_KEYS; x++) {
         printf("%d: 0x%x\n", x, chip8.keyStates[x]);
@@ -71,6 +86,14 @@ void Debug::printKeys() {
 }
 
 void Debug::printOpcode() {
-    cout << endl << "OPCODE" << endl;
-    printf("0x%x\n", chip8.opcode);
+    printHeader("OPCODE");
+    
+    cout << "0x"
+         << setfill('0') << setw(4) << hex << uppercase
+         << ((chip8.memory[chip8.programCounter] << 8) | chip8.memory[chip8.programCounter+1])
+         << endl;
+}
+
+void Debug::printHeader(string text) {
+    cout << endl << text << endl;
 }
