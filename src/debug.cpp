@@ -10,7 +10,9 @@ void Debug::printRom() {
     printHeader("ROM");
     
     for (int x = PC_START; x < PC_START+chip8.romSize; x += 2) {
-        cout << "0x" 
+        char cursor = x == chip8.programCounter ? '>' : ' ';
+
+        cout << cursor << "0x" 
              << setfill('0') << setw(4) << hex << uppercase
              << x << ": " << "0x" << ((chip8.memory[x] << 8) | chip8.memory[x+1]) << endl;
     }
@@ -83,6 +85,15 @@ void Debug::printKeys() {
     for (int x = 0; x < NUM_KEYS; x++) {
         printf("%d: 0x%x\n", x, chip8.keyStates[x]);
     }
+}
+
+void Debug::printStep() {
+    printHeader("STEP");
+
+    cout << "Executing...0x" 
+         << setfill('0') << setw(4) << hex << uppercase
+         << ((chip8.memory[chip8.programCounter] << 8) | chip8.memory[chip8.programCounter+1])
+         << endl;
 }
 
 void Debug::printOpcode() {

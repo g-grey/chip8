@@ -17,6 +17,7 @@ class Debug {
         void printMap();
         void printKeys();
         void printOpcode();
+        void printStep();
     private:
         Chip8 &chip8;
         void printHeader(string text);

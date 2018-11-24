@@ -281,7 +281,15 @@ void Chip8::execute() {
             exit(0);
     }
 
-    if (delayTimer > 0) --delayTimer;
-    if (soundTimer > 0) --soundTimer;
-    if (increment) programCounter += 2;
+    if (delayTimer > 0) {
+        --delayTimer;
+    }
+    
+    if (soundTimer > 0) {
+        --soundTimer;
+    }
+    
+    if (increment) {
+        programCounter += 2;
+    }
 }

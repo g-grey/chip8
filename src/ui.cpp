@@ -4,6 +4,7 @@ UI::UI() {
     quit = false;
     paused = false;
     debugMode = false;
+    
     SDL_Init(SDL_INIT_VIDEO);
 
     window = SDL_CreateWindow(
@@ -110,6 +111,7 @@ void UI::getInput() {
             }
 
             if (e.key.keysym.sym == SDLK_n) {
+                dbg->printStep();
                 paused = false;
             }
 
