@@ -117,7 +117,6 @@ void Chip8::execute() {
         case 0x0000:
             switch (opcode & 0x00FF) {
                 case 0x00e0:
-                    cout << "clearing screen..." << endl;
                     clearMap();
                     updateScreen = true;
                     break;
@@ -178,7 +177,7 @@ void Chip8::execute() {
                     registers[(opcode & 0x0F00) >> 8] += registers[(opcode & 0x00F0) >> 4];
                     break;
                 case 0x0005:
-                    registers[0xf] = registers[(opcode & 0x0F00) >> 8] - registers[(opcode & 0x00F0) >> 4] < 0x0;
+                    registers[0xf] = registers[(opcode & 0x0F00) >> 8] > registers[(opcode & 0x00F0) >> 4];
                     registers[(opcode & 0x0F00) >> 8] -= registers[(opcode & 0x00F0) >> 4];
                     break;
                 case 0x0006:
@@ -186,12 +185,12 @@ void Chip8::execute() {
                     registers[(opcode & 0x0F00) >> 8] = registers[(opcode & 0x0F00) >> 8] >> 1;
                     break;
                 case 0x0007:
-                    printf("  todo - %x not implemented...\n", opcode);
-                    exit(0);
+                    registers[0xF] = registers[(opcode & 0x00F0) >> 4] > registers[(opcode & 0x0F00) >> 8];
+                    registers[(opcode & 0x0F00) >> 8] = registers[(opcode & 0x00F0) >> 4] - registers[(opcode & 0x0F00) >> 8];
                     break;
                 case 0x000e:
-                    printf("  todo - %x not implemented...\n", opcode);
-                    exit(0);
+                    registers[0xf] = registers[(opcode & 0x0F00) >> 8] >> 7;
+                    registers[(opcode & 0x0F00) >> 8] = registers[(opcode & 0x0F00) >> 8] << 1;
                     break;
                 default:
                     printf("  %x not implemented...\n", opcode);
@@ -240,9 +239,8 @@ void Chip8::execute() {
                     registers[(opcode & 0x0F00) >> 8] = delayTimer;
                     break;
                 case 0x000A:
-                    paused = true;
+                    waitForInput = true;
                     setRegister = (opcode & 0x0F00) >> 8;
-                    printf("get key press...\n");
                     break;
                 case 0x0015:
                     delayTimer = (opcode & 0x0F00) >> 8;

@@ -12,7 +12,6 @@
 #define MAP_WIDTH 64
 #define MAP_HEIGHT 32
 #define SPRITE_WIDTH 8
-#define NUM_KEYS 16
 
 class Chip8 {
     public:
@@ -31,6 +30,7 @@ class Chip8 {
         bool keyStates[NUM_KEYS];
         bool paused;
         bool updateScreen;
+        bool waitForInput;
         int setRegister;
     private:
         uint8_t stackPointer;

@@ -35,7 +35,7 @@ UI::UI() {
         {SDLK_z, 0xa},
         {SDLK_x, 0},
         {SDLK_c, 0xb},
-        {SDLK_c, 0xf}
+        {SDLK_v, 0xf}
     };
 
     dbg = new Debug(chip8);
@@ -52,9 +52,9 @@ void UI::run(string rom, bool debug) {
     chip8.loadRom(rom);
 
     while (!quit) {
-        //int start = SDL_GetTicks();
+        int start = SDL_GetTicks();
         
-        if (!paused) {
+        if (!paused && !chip8.waitForInput) {
             chip8.execute();
 
             if (chip8.updateScreen) {
@@ -66,13 +66,11 @@ void UI::run(string rom, bool debug) {
 
         getInput();
 
-        /*
         int time = SDL_GetTicks() - start;
         if (time < 0) continue;
 
         int sleepTime = 5 - time;
         if (sleepTime > 0) SDL_Delay(sleepTime);
-        */
     }
 }
 
@@ -127,28 +125,30 @@ void UI::getInput() {
                 dbg->printRom();
             }
 
+            if (e.key.keysym.sym == SDLK_k) {
+                dbg->printKeys();
+            }
+
             if (e.key.keysym.sym == SDLK_ESCAPE) {
                 quit = true;
             }
 
             for (it = keyMap.begin(); it != keyMap.end(); it++) {
                 if (e.key.keysym.sym == it->first) {
-                    /*
                     chip8.keyStates[it->second] = true;
 
-                    if (chip8.paused) {
-                        chip8.paused = false;
+                    if (chip8.waitForInput) {
+                        chip8.waitForInput = false;
                         chip8.registers[chip8.setRegister] = it->second;
                     }
-                    */
                 }
             }
         }
 
-        if (e.type == SDLK_UP) {
+        if (e.type == SDL_KEYUP) {
             for (it = keyMap.begin(); it != keyMap.end(); it++) {
                 if (e.key.keysym.sym == it->first) {
-                    //chip8.keyStates[it->second] = false;
+                    chip8.keyStates[it->second] = false;
                 }
             }
         }
