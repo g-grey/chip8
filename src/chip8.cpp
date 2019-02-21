@@ -18,6 +18,8 @@ Chip8::Chip8() :
     stackPointer = -1;
     paused = false;
     updateScreen = true;
+    soundTimer = 0;
+    delayTimer = 0;
     
     clearMap();
     loadFont();

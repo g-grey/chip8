@@ -5,7 +5,7 @@ UI::UI() {
     paused = false;
     debugMode = false;
     
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 
     window = SDL_CreateWindow(
         WINDOW_TITLE,
@@ -18,6 +18,9 @@ UI::UI() {
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_RenderClear(renderer);
+
+    SDL_LoadWAV(BEEP_FILE, &wavSpec, &wavBuffer, &wavLength);
+    deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
 
     keyMap = {
         {SDLK_1, 1},
@@ -44,6 +47,8 @@ UI::UI() {
 UI::~UI() {
     delete dbg;
     SDL_DestroyWindow(window);
+    SDL_CloseAudioDevice(deviceId);
+    SDL_FreeWAV(wavBuffer);
     SDL_Quit();
 }
 
@@ -62,6 +67,11 @@ void UI::run(string rom, bool debug) {
             }
 
             paused = debugMode;
+
+            if (chip8.beep()) {            
+                SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+                SDL_PauseAudioDevice(deviceId, 0);
+            }
         }
 
         getInput();

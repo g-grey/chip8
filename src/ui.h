@@ -8,6 +8,7 @@
 #define UI_H
 
 #define WINDOW_TITLE "Chip8"
+#define BEEP_FILE "beep.wav"
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 640
 #define MAP_WIDTH 64
@@ -31,6 +32,10 @@ class UI {
         Debug *dbg;
         bool paused;
         bool debugMode;
+        SDL_AudioSpec wavSpec;
+        Uint32 wavLength;
+        Uint8 *wavBuffer;
+        SDL_AudioDeviceID deviceId;
 };
 
 #endif
