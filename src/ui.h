@@ -11,8 +11,6 @@
 #define BEEP_FILE "beep.wav"
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 640
-#define MAP_WIDTH 64
-#define MAP_HEIGHT 32
 
 class UI {
     public:
@@ -20,7 +18,7 @@ class UI {
         ~UI();
         void drawScreen(u_int8_t (&map)[MAP_WIDTH][MAP_HEIGHT]);
         void getInput();
-        void run(string rom, bool debugMode);
+        void run(string rom, bool debug);
         bool quit;
     private:
         SDL_Window *window;

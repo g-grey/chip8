@@ -26,19 +26,19 @@ UI::UI() {
         {SDLK_1, 1},
         {SDLK_2, 2},
         {SDLK_3, 3},
-        {SDLK_4, 0xc},
+        {SDLK_4, 0xC},
         {SDLK_q, 4},
         {SDLK_w, 5},
         {SDLK_e, 6},
-        {SDLK_r, 0xd},
+        {SDLK_r, 0xD},
         {SDLK_a, 7},
         {SDLK_s, 8},
         {SDLK_d, 9},
-        {SDLK_f, 0xe},
-        {SDLK_z, 0xa},
+        {SDLK_f, 0xE},
+        {SDLK_z, 0xA},
         {SDLK_x, 0},
-        {SDLK_c, 0xb},
-        {SDLK_v, 0xf}
+        {SDLK_c, 0xB},
+        {SDLK_v, 0xF}
     };
 
     dbg = new Debug(chip8);
@@ -72,10 +72,13 @@ void UI::run(string rom, bool debug) {
                 SDL_QueueAudio(deviceId, wavBuffer, wavLength);
                 SDL_PauseAudioDevice(deviceId, 0);
             }
+
+            chip8.decrementTimers();
         }
 
         getInput();
 
+        // TODO - delay not working quite right
         int time = SDL_GetTicks() - start;
         if (time < 0) continue;
 

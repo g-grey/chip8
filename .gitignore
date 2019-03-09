@@ -3,3 +3,4 @@ roms
 chip8
 *.o
 .vscode/
+.DS_Store

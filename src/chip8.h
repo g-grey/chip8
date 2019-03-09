@@ -23,6 +23,7 @@ class Chip8 {
         bool beep();
         void draw(int x, int y, int height);
         void execute();
+        void decrementTimers();
         void setKeyStates(bool &keyMap);
 
         uint8_t registers[NUM_REGISTERS];

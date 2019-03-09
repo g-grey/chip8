@@ -104,7 +104,7 @@ void Chip8::draw(int x, int y, int height) {
                 map[sprite_w][sprite_h] ^= bits[w];
 
                 if (prev == 1 && map[sprite_w][sprite_h] == 0)
-                    registers[0xf] = 1;
+                    registers[0xF] = 1;
             }
         }
     }
@@ -118,11 +118,11 @@ void Chip8::execute() {
     switch (opcode & 0xF000) {
         case 0x0000:
             switch (opcode & 0x00FF) {
-                case 0x00e0:
+                case 0x00E0:
                     clearMap();
                     updateScreen = true;
                     break;
-                case 0x00ee:
+                case 0x00EE:
                     programCounter = stack[stackPointer--];
                     break;
                 default:
@@ -179,19 +179,19 @@ void Chip8::execute() {
                     registers[(opcode & 0x0F00) >> 8] += registers[(opcode & 0x00F0) >> 4];
                     break;
                 case 0x0005:
-                    registers[0xf] = registers[(opcode & 0x0F00) >> 8] > registers[(opcode & 0x00F0) >> 4];
+                    registers[0xF] = registers[(opcode & 0x0F00) >> 8] > registers[(opcode & 0x00F0) >> 4];
                     registers[(opcode & 0x0F00) >> 8] -= registers[(opcode & 0x00F0) >> 4];
                     break;
                 case 0x0006:
-                    registers[0xf] = registers[(opcode & 0x0F00) >> 8] & 1;
+                    registers[0xF] = registers[(opcode & 0x0F00) >> 8] & 1;
                     registers[(opcode & 0x0F00) >> 8] = registers[(opcode & 0x0F00) >> 8] >> 1;
                     break;
                 case 0x0007:
                     registers[0xF] = registers[(opcode & 0x00F0) >> 4] > registers[(opcode & 0x0F00) >> 8];
                     registers[(opcode & 0x0F00) >> 8] = registers[(opcode & 0x00F0) >> 4] - registers[(opcode & 0x0F00) >> 8];
                     break;
-                case 0x000e:
-                    registers[0xf] = registers[(opcode & 0x0F00) >> 8] >> 7;
+                case 0x000E:
+                    registers[0xF] = registers[(opcode & 0x0F00) >> 8] >> 7;
                     registers[(opcode & 0x0F00) >> 8] = registers[(opcode & 0x0F00) >> 8] << 1;
                     break;
                 default:
@@ -204,28 +204,28 @@ void Chip8::execute() {
                 programCounter += 2;
             }
             break;
-        case 0xa000:
+        case 0xA000:
             i = opcode & 0x0FFF;
             break;
-        case 0xb000:
+        case 0xB000:
             programCounter = registers[0] + (opcode & 0x0FFF);
             increment = false;
             break;
-        case 0xc000:
+        case 0xC000:
             registers[(opcode & 0x0F00) >> 8] = (rand() % 256) & (opcode & 0x00FF);
             break;
-        case 0xd000:
+        case 0xD000:
             draw(registers[(opcode & 0x0F00) >> 8], registers[(opcode & 0x00F0) >> 4], opcode & 0x000F);
             updateScreen = true;
             break;
-        case 0xe000:
+        case 0xE000:
             switch (opcode & 0x00FF) {
-                case 0x009e:
+                case 0x009E:
                     if (keyStates[registers[(opcode & 0x0F00) >> 8]]) {
                         programCounter += 2;
                     }
                     break;
-                case 0x00a1:
+                case 0x00A1:
                     if (!keyStates[registers[(opcode & 0x0F00) >> 8]]) {
                         programCounter += 2;
                     }
@@ -235,7 +235,7 @@ void Chip8::execute() {
                     exit(0);
             }
             break;
-        case 0xf000:
+        case 0xF000:
             switch (opcode & 0x00FF) {
                 case 0x0007:
                     registers[(opcode & 0x0F00) >> 8] = delayTimer;
@@ -250,7 +250,7 @@ void Chip8::execute() {
                 case 0x0018:
                     soundTimer = (opcode & 0x0F00) >> 8;
                     break;
-                case 0x001e:
+                case 0x001E:
                     i += registers[(opcode & 0x0F00) >> 8];
                     break;
                 case 0x0029:
@@ -281,15 +281,17 @@ void Chip8::execute() {
             exit(0);
     }
 
+    if (increment) {
+        programCounter += 2;
+    }
+}
+
+void Chip8::decrementTimers() {
     if (delayTimer > 0) {
         --delayTimer;
     }
     
     if (soundTimer > 0) {
         --soundTimer;
-    }
-    
-    if (increment) {
-        programCounter += 2;
     }
 }
