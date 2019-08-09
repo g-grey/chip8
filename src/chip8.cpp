@@ -3,7 +3,7 @@
 #include "chip8.h"
 
 Chip8::Chip8() :
-    map(MAP_WIDTH, std::vector<uint8_t>(MAP_HEIGHT, 0)),
+    map(MAP_WIDTH, std::vector<uint8_t>(MAP_HEIGHT)),
     registers(),
     memory(),
     stack(),
@@ -17,8 +17,8 @@ Chip8::Chip8() :
     updateScreen = true;
     soundTimer = 0;
     delayTimer = 0;
+    waitForInput = false;
 
-    clearMap();
     loadFont();
     srand(time(NULL));
 }
