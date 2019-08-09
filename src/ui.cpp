@@ -52,22 +52,22 @@ UI::~UI() {
     SDL_Quit();
 }
 
-void UI::run(string rom, bool debug) {
+void UI::run(std::string rom, bool debug) {
     paused = debugMode = debug;
     chip8.loadRom(rom);
-
     while (!quit) {
         int start = SDL_GetTicks();
         
-        if (!paused && !chip8.waitForInput) {
+        if (!paused && !chip8.getWaitForInput()) {
             chip8.execute();
 
-            if (chip8.updateScreen) {
-                drawScreen(chip8.map);
+            if (chip8.getUpdateScreen()) {
+                drawScreen(chip8.getMap());
             }
 
             paused = debugMode;
 
+            
             if (chip8.beep()) {            
                 SDL_QueueAudio(deviceId, wavBuffer, wavLength);
                 SDL_PauseAudioDevice(deviceId, 0);
@@ -87,7 +87,7 @@ void UI::run(string rom, bool debug) {
     }
 }
 
-void UI::drawScreen(uint8_t (&map)[MAP_WIDTH][MAP_HEIGHT]) {
+void UI::drawScreen(std::vector<std::vector<uint8_t>> map) {
     // TODO - just draw current sprite rather than entire screen
     for (int h = 0; h < MAP_HEIGHT; h++) {
         for (int w = 0; w < MAP_WIDTH; w++) {
@@ -148,11 +148,11 @@ void UI::getInput() {
 
             for (it = keyMap.begin(); it != keyMap.end(); it++) {
                 if (e.key.keysym.sym == it->first) {
-                    chip8.keyStates[it->second] = true;
+                    chip8.setKeyState(it->second, true);
 
-                    if (chip8.waitForInput) {
-                        chip8.waitForInput = false;
-                        chip8.registers[chip8.setRegister] = it->second;
+                    if (chip8.getWaitForInput()) {
+                        chip8.setWaitForInput(false);
+                        chip8.setRegister(chip8.getRegisterToSet(), it->second);
                     }
                 }
             }
@@ -161,7 +161,7 @@ void UI::getInput() {
         if (e.type == SDL_KEYUP) {
             for (it = keyMap.begin(); it != keyMap.end(); it++) {
                 if (e.key.keysym.sym == it->first) {
-                    chip8.keyStates[it->second] = false;
+                    chip8.setKeyState(it->second, false);
                 }
             }
         }

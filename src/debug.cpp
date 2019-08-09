@@ -12,43 +12,45 @@ void Debug::printRom() {
     for (int x = PC_START; x < PC_START+chip8.romSize; x += 2) {
         char cursor = x == chip8.programCounter ? '>' : ' ';
 
-        cout << cursor << "0x" 
-             << setfill('0') << setw(4) << hex << uppercase
-             << x << ": " << "0x" << ((chip8.memory[x] << 8) | chip8.memory[x+1]) << endl;
+        std::cout << cursor << "0x" 
+                  << std::setfill('0') << std::setw(4) << std::hex << std::uppercase
+                  << x << ": " << "0x" << ((chip8.memory[x] << 8) | chip8.memory[x+1]) << std::endl;
     }
 }
 
 void Debug::printRegisters() {
     printHeader("REGISTERS");
 
-    cout << "PC: 0x"
-         << setfill('0') << setw(4) << hex << uppercase
-         << chip8.programCounter << endl;
+    std::cout << "PC: 0x"
+              << std::setfill('0') << std::setw(4) << std::hex << std::uppercase
+              << chip8.programCounter << std::endl;
 
-    cout << " I: 0x"
-         << setfill('0') << setw(4) << hex << uppercase
-         << chip8.i << endl;
+    std::cout << " I: 0x"
+              << std::setfill('0') << std::setw(4) << std::hex << std::uppercase
+              << chip8.i << std::endl;
 
-    cout << "SP: 0x"
-         << setfill('0') << setw(4) << hex << uppercase
-         << chip8.stackPointer << endl << endl;
+    std::cout << "SP: 0x"
+              << std::setfill('0') << std::setw(4) << std::hex << std::uppercase
+              << chip8.stackPointer << std::endl << std::endl;
     
-    for (int x = 0; x < NUM_REGISTERS; x++) {
-        cout << "V" 
-             << hex << uppercase
-             << x << ": " << "0x" 
-             << setfill('0') << setw(4)
-             << (unsigned int)chip8.registers[x] << endl;
+    for (int x = 0; x < NUM_REGISTERS; ++x) {
+        std::cout << "V" 
+                  << std::hex << std::uppercase
+                  << x << ": " << "0x" 
+                  << std::setfill('0') << std::setw(4)
+                  << (unsigned int)chip8.registers[x] << std::endl;
     }
 }
 
 void Debug::printMemory() {
     printHeader("MEMORY");
     
-    for (int x = 0; x < MEMORY_SIZE; x++) {
+    for (int x = 0; x < MEMORY_SIZE; ++x) {
         printf("0x%x: 0x%x ", x, chip8.memory[x]);
 
-        if (x % 15 == 0) printf("\n");
+        if (x % 15 == 0) {
+            printf("\n");
+        }
     }
 
     printf("\n");
@@ -59,7 +61,7 @@ void Debug::printStack() {
     
     printf("\nsp: %d\n", chip8.stackPointer);
 
-    for (int x = 0; x < STACK_SIZE; x++) {
+    for (int x = 0; x < STACK_SIZE; ++x) {
         printf("%d: 0x%x\n", x, chip8.stack[x]);
     }
 }
@@ -67,15 +69,15 @@ void Debug::printStack() {
 void Debug::printMap() {
     printHeader("MAP");
     
-    for (int h = 0; h < MAP_HEIGHT; h++) {
-        for (int w = 0; w < MAP_WIDTH; w++) {
+    for (int h = 0; h < MAP_HEIGHT; ++h) {
+        for (int w = 0; w < MAP_WIDTH; ++w) {
             if (chip8.map[w][h]) {
-                cout << "#";
+                std::cout << "#";
             } else {
-                cout << "-";
+                std::cout << "-";
             } 
         }
-        cout << endl;
+        std::cout << std::endl;
     }
 }
 
@@ -90,21 +92,21 @@ void Debug::printKeys() {
 void Debug::printStep() {
     printHeader("STEP");
 
-    cout << "Executing...0x" 
-         << setfill('0') << setw(4) << hex << uppercase
-         << ((chip8.memory[chip8.programCounter] << 8) | chip8.memory[chip8.programCounter+1])
-         << endl;
+    std::cout << "Executing...0x" 
+              << std::setfill('0') << std::setw(4) << std::hex << std::uppercase
+              << ((chip8.memory[chip8.programCounter] << 8) | chip8.memory[chip8.programCounter+1])
+              << std::endl;
 }
 
 void Debug::printOpcode() {
     printHeader("OPCODE");
     
-    cout << "0x"
-         << setfill('0') << setw(4) << hex << uppercase
+    std::cout << "0x"
+         << std::setfill('0') << std::setw(4) << std::hex << std::uppercase
          << ((chip8.memory[chip8.programCounter] << 8) | chip8.memory[chip8.programCounter+1])
-         << endl;
+         << std::endl;
 }
 
-void Debug::printHeader(string text) {
-    cout << endl << text << endl;
+void Debug::printHeader(std::string text) {
+    std::cout << std::endl << text << std::endl;
 }

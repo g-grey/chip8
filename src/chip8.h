@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #ifndef CHIP8_H
 #define CHIP8_H
@@ -17,30 +18,36 @@ class Chip8 {
     public:
         Chip8();
         ~Chip8();
-        void loadFont();
-        void loadRom(std::string rom);
-        void clearMap();
+        void loadRom(std::string rom);        
         bool beep();
-        void draw(int x, int y, int height);
         void execute();
         void decrementTimers();
-        void setKeyStates(bool &keyMap);
-
-        uint8_t registers[NUM_REGISTERS];
-        uint8_t map[MAP_WIDTH][MAP_HEIGHT];
-        bool keyStates[NUM_KEYS];
-        bool paused;
-        bool updateScreen;
-        bool waitForInput;
-        int setRegister;
+        bool getPaused();
+        bool getUpdateScreen();
+        bool getWaitForInput();
+        void setWaitForInput(bool val);
+        void setRegister(int reg, uint8_t val);
+        void setKeyState(int key, bool val);
+        int getRegisterToSet();
+        std::vector<std::vector<uint8_t>> getMap();
     private:
+        void loadFont();
+        void clearMap();
+        void draw(int x, int y, int height);
+        std::vector<std::vector<uint8_t>> map;
+        uint8_t registers[NUM_REGISTERS];
         uint8_t stackPointer;
         uint8_t memory[MEMORY_SIZE];
         uint16_t stack[STACK_SIZE];
         uint16_t opcode;
         uint16_t i;
         uint16_t programCounter;
+        bool paused;
+        bool updateScreen;
+        bool waitForInput;
+        bool keyStates[NUM_KEYS];
         unsigned int romSize;
+        unsigned int registerToSet;
         unsigned char delayTimer;
         unsigned char soundTimer;
         friend class Debug;

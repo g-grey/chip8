@@ -1,6 +1,5 @@
 #include <SDL2/SDL.h>
 #include <map>
-#include <string>
 #include "chip8.h"
 #include "debug.h"
 
@@ -16,11 +15,10 @@ class UI {
     public:
         UI();
         ~UI();
-        void drawScreen(u_int8_t (&map)[MAP_WIDTH][MAP_HEIGHT]);
-        void getInput();
-        void run(string rom, bool debug);
-        bool quit;
+        void run(std::string rom, bool debug);
     private:
+        void drawScreen(std::vector<std::vector<uint8_t>> map);
+        void getInput();
         SDL_Window *window;
         SDL_Renderer *renderer;
         SDL_Event e;
@@ -30,6 +28,7 @@ class UI {
         Debug *dbg;
         bool paused;
         bool debugMode;
+        bool quit;
         SDL_AudioSpec wavSpec;
         Uint32 wavLength;
         Uint8 *wavBuffer;

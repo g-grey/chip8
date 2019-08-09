@@ -1,8 +1,6 @@
 #include <iostream>
 #include "chip8.h"
 
-using namespace std;
-
 #ifndef DEBUG_H
 #define DEBUG_H
 
@@ -20,7 +18,7 @@ class Debug {
         void printStep();
     private:
         Chip8 &chip8;
-        void printHeader(string text);
+        void printHeader(std::string text);
 };
 
 #endif

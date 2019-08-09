@@ -1,16 +1,13 @@
-#include <iostream>
-#include <string>
 #include <fstream>
 #include <unistd.h>
 #include "chip8.h"
 
-using namespace std;
-
 Chip8::Chip8() :
+    map(MAP_WIDTH, std::vector<uint8_t>(MAP_HEIGHT, 0)),
     registers(),
-    keyStates(),
     memory(),
-    stack()
+    stack(),
+    keyStates()
 {
     opcode = 0;
     i = 0;
@@ -20,7 +17,7 @@ Chip8::Chip8() :
     updateScreen = true;
     soundTimer = 0;
     delayTimer = 0;
-    
+
     clearMap();
     loadFont();
     srand(time(NULL));
@@ -49,13 +46,13 @@ void Chip8::loadFont() {
     };
 
     // load fonts into memory
-    for (int x = 0; x < 80; x++) {
+    for (int x = 0; x < 80; ++x) {
         memory[x] = font[x];
     }
 }
 
-void Chip8::loadRom(string rom) {
-    ifstream is(rom, ifstream::binary);
+void Chip8::loadRom(std::string rom) {
+    std::ifstream is(rom, std::ifstream::binary);
 
     if (is) {
         // load rom into temp buffer
@@ -66,7 +63,7 @@ void Chip8::loadRom(string rom) {
         is.read(buffer, romSize);
 
         // load rom into memory
-        for (int x = 0; x < romSize; x++) {
+        for (int x = 0; x < romSize; ++x) {
             memory[x+PC_START] = buffer[x];
         }
 
@@ -75,8 +72,8 @@ void Chip8::loadRom(string rom) {
 }
 
 void Chip8::clearMap() {
-    for (int h = 0; h < MAP_HEIGHT; h++) {
-        for (int w = 0; w < MAP_WIDTH; w++) {
+    for (int h = 0; h < MAP_HEIGHT; ++h) {
+        for (int w = 0; w < MAP_WIDTH; ++w) {
             map[w][h] = 0;
         }
     }
@@ -90,12 +87,12 @@ void Chip8::draw(int x, int y, int height) {
     uint8_t bits[SPRITE_WIDTH];
 
     // set sprite in map
-    for (int h = 0; h < height; h++) {
+    for (int h = 0; h < height; ++h) {
         for (int m = 0; m < SPRITE_WIDTH; ++m) {
             bits[SPRITE_WIDTH-1-m] = (memory[i+h] >> m) & 1;
         }
 
-        for (int w = 0; w < SPRITE_WIDTH; w++) {
+        for (int w = 0; w < SPRITE_WIDTH; ++w) {
             int sprite_h = y + h;
             int sprite_w = x + w;
 
@@ -242,7 +239,7 @@ void Chip8::execute() {
                     break;
                 case 0x000A:
                     waitForInput = true;
-                    setRegister = (opcode & 0x0F00) >> 8;
+                    registerToSet = (opcode & 0x0F00) >> 8;
                     break;
                 case 0x0015:
                     delayTimer = (opcode & 0x0F00) >> 8;
@@ -294,4 +291,36 @@ void Chip8::decrementTimers() {
     if (soundTimer > 0) {
         --soundTimer;
     }
+}
+
+bool Chip8::getUpdateScreen() {
+    return updateScreen;
+}
+
+bool Chip8::getPaused() {
+    return paused;
+}
+
+bool Chip8::getWaitForInput() {
+    return waitForInput;
+}
+
+void Chip8::setWaitForInput(bool val) {
+    waitForInput = val;
+}
+
+void Chip8::setRegister(int reg, uint8_t val) {
+    registers[reg] = val;
+}
+
+void Chip8::setKeyState(int key, bool val) {
+    keyStates[key] = val;
+}
+
+int Chip8::getRegisterToSet() {
+    return registerToSet;
+}
+
+std::vector<std::vector<uint8_t>> Chip8::getMap() {
+    return map;
 }
