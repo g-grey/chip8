@@ -1,2 +1,2 @@
 # chip8
-Chip8 emulator written in C++
+WIP Chip8 emulator written in C++
