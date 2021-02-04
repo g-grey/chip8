@@ -55,6 +55,7 @@ UI::~UI() {
 void UI::run(std::string rom, bool debug) {
     paused = debugMode = debug;
     chip8.loadRom(rom);
+    
     while (!quit) {
         int start = SDL_GetTicks();
         
@@ -80,10 +81,16 @@ void UI::run(std::string rom, bool debug) {
 
         // TODO - delay not working quite right
         int time = SDL_GetTicks() - start;
-        if (time < 0) continue;
+        
+        if (time < 0) {
+            continue;
+        }
 
         int sleepTime = 5 - time;
-        if (sleepTime > 0) SDL_Delay(sleepTime);
+        
+        if (sleepTime > 0) {
+            SDL_Delay(sleepTime);
+        }
     }
 }
 
