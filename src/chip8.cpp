@@ -163,7 +163,7 @@ void Chip8::execute() {
                     registers[(opcode & 0x0F00) >> 8] = registers[(opcode & 0x00F0) >> 4];
                     break;
                 case 0x0001:
-                    registers[(opcode & 0x0F00) >> 8] |= registers[(opcode & 0x00F0)] >> 4;
+                    registers[(opcode & 0x0F00) >> 8] |= registers[(opcode & 0x00F0) >> 4];
                     break;
                 case 0x0002:
                     registers[(opcode & 0x0F00) >> 8] &= registers[(opcode & 0x00F0) >> 4];
